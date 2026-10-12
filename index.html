@@ -259,11 +259,9 @@ details.assume .rows { margin-top: 0.5rem; }
       <details class="assume">
         <summary>Assumptions</summary>
         <div class="rows small">
-          <div class="row"><label for="a_hours">Training and coaching hours</label><input id="a_hours" type="text" inputmode="numeric" autocomplete="off" data-key="coachingHours"></div>
-          <div class="row"><label for="a_rate">Value of a manager's hour</label><input id="a_rate" type="text" inputmode="numeric" autocomplete="off" data-key="hourlyRate" data-money></div>
           <div class="row"><label for="a_opp">Lost revenue per opportunity</label><input id="a_opp" type="text" inputmode="numeric" autocomplete="off" data-key="lostPerOpp" data-money></div>
           <div class="row"><label for="a_peryear">Lost opportunities per year</label><input id="a_peryear" type="text" inputmode="numeric" autocomplete="off" data-key="lostPerYear"></div>
-          <div class="row"><label for="a_years">Years on the team</label><input id="a_years" type="text" inputmode="numeric" autocomplete="off" data-key="years"></div>
+          <div class="row"><label for="a_years">Average years on the team</label><input id="a_years" type="text" inputmode="numeric" autocomplete="off" data-key="years"></div>
         </div>
         <button type="button" class="reset" id="a_reset">Reset assumptions</button>
       </details>
@@ -279,14 +277,14 @@ details.assume .rows { margin-top: 0.5rem; }
       <div id="r_ready">
         <div class="total-label">Return on Investment</div>
         <div class="total" id="r_multiple">0x</div>
-        <div class="per">Underperformers cost <span id="r_multiple_text">0x</span> the SEIA investment</div>
+        <div class="per">Underperformers cost <span id="r_multiple_text">0x</span> the benchmarking investment</div>
         <div class="breakdown">
           <div class="b-row">
             <div><div class="b-label">Cost of underperformers</div><div class="b-detail" id="u_detail"></div></div>
             <div class="b-value" id="u_total">$0</div>
           </div>
           <div class="b-row feature">
-            <div><div class="b-label">SEIA investment</div><div class="b-detail" id="s_detail"></div></div>
+            <div><div class="b-label">Benchmarking Investment</div><div class="b-detail" id="s_detail"></div></div>
             <div class="b-value" id="s_total">$0</div>
           </div>
           <div class="b-row">
@@ -309,7 +307,7 @@ details.assume .rows { margin-top: 0.5rem; }
 // ---- ADRIAN'S NUMBERS (from the Oct 12 call) ----------------------------
 // Edit these to change what the page opens with.
 const START = {
-  underperformers: 6,     // Marc: ~5 RSMs + 1 FAE
+  underperformers: 10,    // underperformers
   salary: 95000,          // average salary
   evaluate: 25            // people in scope for the SEIA
 };
@@ -318,8 +316,6 @@ const START = {
 // Starting values for the Assumptions section. "Reset assumptions" puts
 // these values back.
 const UNDER = {
-  coachingHours: 100,     // hours of training and coaching per underperformer
-  hourlyRate: 750,        // value of a manager's hour
   lostPerOpp: 20000,      // revenue per lost account or opportunity
   lostPerYear: 2,         // lost accounts or opportunities per year
   years: 2                // average years an underperformer has worked
@@ -344,7 +340,7 @@ const assumeInputs = Array.from(document.querySelectorAll('.assume input'));
 const A = key => val(assumeInputs.find(el => el.dataset.key === key).id);
 
 const underPerPerson = salary =>
-  A('coachingHours') * A('hourlyRate') + salary + A('lostPerOpp') * A('lostPerYear') * A('years');
+  salary + A('lostPerOpp') * A('lostPerYear') * A('years');
 const rateFor = n => Math.max(FLOOR_RATE, START_RATE - STEP * (n - 1));
 const seiaTotal = n => REPORT_FEE + n * rateFor(n);
 const formatMultiple = x => (x >= 10 ? Math.round(x).toLocaleString('en-US') : x.toFixed(1)) + 'x';
